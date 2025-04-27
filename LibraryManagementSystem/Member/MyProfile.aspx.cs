@@ -12,7 +12,7 @@ namespace LibraryManagementSystem.Member
                 // بررسی نقش کاربر
                 if (Session["Role"] == null || Session["Role"].ToString() != "Member")
                 {
-                    Response.Redirect("~/Login.aspx"); // هدایت به صفحه ورود اگر کاربر عضو نباشد
+                    Response.Redirect("~/Login.aspx", false); // هدایت به صفحه ورود اگر کاربر عضو نباشد
                 }
 
                 LoadProfile();

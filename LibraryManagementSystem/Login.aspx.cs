@@ -31,7 +31,7 @@ namespace LibraryManagementSystem
                     // هدایت کاربر به صفحه مناسب بر اساس نقش
                     if (Session["Role"].ToString() == "Admin")
                     {
-                        Response.Redirect("~/Admin/Dashboard.aspx");
+                        Response.Redirect("~/Admin/Dashboard.aspx", false);
                     }
                     else
                     {

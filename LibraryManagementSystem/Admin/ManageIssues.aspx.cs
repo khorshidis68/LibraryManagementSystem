@@ -36,7 +36,7 @@ namespace LibraryManagementSystem.Admin
 
         private void LoadMembers()
         {
-            string query = "SELECT MemberID, FullName FROM Members";
+            string query = "SELECT MemberID, FirstName + ' ' + LastName as FullName FROM Members";
             DataTable dt = DatabaseHelper.ExecuteQuery(query);
             ddlMembers.DataSource = dt;
             ddlMembers.DataTextField = "FullName";
@@ -49,10 +49,7 @@ namespace LibraryManagementSystem.Admin
 
         private void LoadIssues()
         {
-            string query = "SELECT i.IssueID, b.Title AS BookTitle, m.FullName AS MemberName, i.IssueDate, i.ReturnDate, i.FineAmount " +
-                           "FROM Issue_Books i " +
-                           "INNER JOIN Books b ON i.BookID = b.BookID " +
-                           "INNER JOIN Members m ON i.MemberID = m.MemberID";
+            string query = "SELECT i.IssueID, b.Title AS BookTitle, m.FirstName + ' ' + m.LastName as MemberName, i.IssueDate, i.ReturnDate, i.LateFee as FineAmount FROM Issue_Books i INNER JOIN Books b ON i.BookID = b.BookID INNER JOIN Members m ON i.MemberID = m.MemberID";
             DataTable dt = DatabaseHelper.ExecuteQuery(query);
             gvIssues.DataSource = dt;
             gvIssues.DataBind();
@@ -105,7 +102,7 @@ namespace LibraryManagementSystem.Admin
             {
                 int issueID = Convert.ToInt32(e.CommandArgument);
 
-                string query = $"UPDATE Issue_Books SET ReturnDate=GETDATE(), FineAmount=0 WHERE IssueID={issueID}";
+                string query = $"UPDATE Issue_Books SET ReturnDate=GETDATE(), LateFee=0 WHERE IssueID={issueID}";
                 int result = DatabaseHelper.ExecuteNonQuery(query);
 
                 if (result > 0)
