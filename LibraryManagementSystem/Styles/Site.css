@@ -1,0 +1,144 @@
+﻿/* تنظیمات عمومی صفحه */
+body {
+    font-family: Arial, sans-serif; /* فونت پیش‌فرض */
+    margin: 0; /* حذف مارجین‌های پیش‌فرض */
+    padding: 0; /* حذف پدینگ‌های پیش‌فرض */
+    background-color: #f4f4f9; /* رنگ زمینه صفحه */
+    color: #333; /* رنگ متن پیش‌فرض */
+}
+
+/* Header سایت */
+header {
+    background-color: #4CAF50; /* رنگ زمینه Header */
+    color: white; /* رنگ متن Header */
+    padding: 15px 20px; /* فاصله داخلی Header */
+    text-align: center; /* متن در وسط قرار بگیرد */
+    font-size: 24px; /* اندازه فونت عنوان */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* سایه برای Header */
+}
+
+/* منوی اصلی */
+nav {
+    background-color: #333; /* رنگ زمینه منو */
+    overflow: hidden; /* جلوگیری از سرریز عناصر */
+}
+
+    nav a {
+        float: left; /* چیدمان لینک‌ها به صورت افقی */
+        display: block; /* لینک‌ها به صورت بلوکی باشند */
+        color: white; /* رنگ متن لینک‌ها */
+        text-align: center; /* متن در وسط قرار بگیرد */
+        padding: 14px 20px; /* فاصله داخلی لینک‌ها */
+        text-decoration: none; /* حذف زیرخط لینک‌ها */
+        font-size: 16px; /* اندازه فونت لینک‌ها */
+    }
+
+        nav a:hover {
+            background-color: #575757; /* رنگ زمینه لینک‌ها وقتی ماوس روی آن‌ها باشد */
+            transition: background-color 0.3s ease; /* انتقال رنگ به صورت نرم */
+        }
+
+/* محتوای اصلی */
+main {
+    padding: 20px; /* فاصله داخلی محتوا */
+    min-height: calc(100vh - 120px); /* ارتفاع حداقلی محتوا */
+    background-color: #fff; /* رنگ زمینه محتوا */
+    margin: 20px; /* فاصله خارجی محتوا */
+    border-radius: 8px; /* گرد کردن گوشه‌ها */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* سایه برای محتوا */
+}
+
+/* جدول‌ها */
+table {
+    width: 100%; /* عرض جدول به صورت کامل */
+    border-collapse: collapse; /* ادغام خطوط جدول */
+    margin-bottom: 20px; /* فاصله پایین جدول */
+}
+
+    table th, table td {
+        border: 1px solid #ddd; /* خطوط جدول */
+        padding: 8px; /* فاصله داخلی سلول‌ها */
+        text-align: center; /* متن در وسط قرار بگیرد */
+    }
+
+    table th {
+        background-color: #4CAF50; /* رنگ زمینه سربرگ جدول */
+        color: white; /* رنگ متن سربرگ جدول */
+    }
+
+    table tr:nth-child(even) {
+        background-color: #f2f2f2; /* رنگ زمینه ردیف‌های زوج */
+    }
+
+    table tr:hover {
+        background-color: #ddd; /* رنگ زمینه ردیف‌ها وقتی ماوس روی آن‌ها باشد */
+        transition: background-color 0.3s ease; /* انتقال رنگ به صورت نرم */
+    }
+
+/* دکمه‌ها */
+button, input[type="submit"], .btn {
+    background-color: #4CAF50; /* رنگ زمینه دکمه‌ها */
+    color: white; /* رنگ متن دکمه‌ها */
+    border: none; /* حذف خط دور دکمه‌ها */
+    padding: 10px 20px; /* فاصله داخلی دکمه‌ها */
+    font-size: 16px; /* اندازه فونت دکمه‌ها */
+    cursor: pointer; /* تبدیل مکان‌نما به دستی */
+    border-radius: 5px; /* گرد کردن گوشه‌ها */
+    transition: background-color 0.3s ease; /* انتقال رنگ به صورت نرم */
+}
+
+    button:hover, input[type="submit"]:hover, .btn:hover {
+        background-color: #45a049; /* تغییر رنگ دکمه‌ها وقتی ماوس روی آن‌ها باشد */
+    }
+
+/* فرم‌ها */
+form {
+    max-width: 500px; /* حداکثر عرض فرم */
+    margin: auto; /* قرار دادن فرم در وسط صفحه */
+    padding: 20px; /* فاصله داخلی فرم */
+    background-color: #f9f9f9; /* رنگ زمینه فرم */
+    border-radius: 8px; /* گرد کردن گوشه‌ها */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* سایه برای فرم */
+}
+
+    form label {
+        display: block; /* هر لیبل در یک خط جداگانه */
+        margin-bottom: 8px; /* فاصله پایین لیبل‌ها */
+        font-weight: bold; /* ضخامت متن لیبل‌ها */
+    }
+
+    form input[type="text"],
+    form input[type="password"],
+    form input[type="email"] {
+        width: 100%; /* عرض کامل ورودی‌ها */
+        padding: 10px; /* فاصله داخلی ورودی‌ها */
+        margin-bottom: 15px; /* فاصله پایین ورودی‌ها */
+        border: 1px solid #ccc; /* خط دور ورودی‌ها */
+        border-radius: 5px; /* گرد کردن گوشه‌ها */
+        font-size: 16px; /* اندازه فونت ورودی‌ها */
+    }
+
+/* پاورقی سایت */
+footer {
+    background-color: #333; /* رنگ زمینه Footer */
+    color: white; /* رنگ متن Footer */
+    text-align: center; /* متن در وسط قرار بگیرد */
+    padding: 10px 0; /* فاصله داخلی Footer */
+    position: relative; /* موقعیت نسبی */
+    bottom: 0; /* در پایین صفحه قرار بگیرد */
+    width: 100%; /* عرض کامل صفحه */
+    margin-top: 20px; /* فاصله بالای Footer */
+}
+
+/* پیام‌های خطا و موفقیت */
+.error {
+    color: red; /* رنگ متن پیام‌های خطا */
+    font-size: 14px; /* اندازه فونت پیام‌های خطا */
+    margin-bottom: 10px; /* فاصله پایین پیام‌های خطا */
+}
+
+.success {
+    color: green; /* رنگ متن پیام‌های موفقیت */
+    font-size: 14px; /* اندازه فونت پیام‌های موفقیت */
+    margin-bottom: 10px; /* فاصله پایین پیام‌های موفقیت */
+}
