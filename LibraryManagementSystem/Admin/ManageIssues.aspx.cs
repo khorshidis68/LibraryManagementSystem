@@ -9,14 +9,9 @@ namespace LibraryManagementSystem.Admin
         {
             if (!IsPostBack)
             {
-                // بررسی نقش کاربر
-                if (Session["Role"] == null || Session["Role"].ToString() != "Admin")
-                {
-                    Response.Redirect("../Login.aspx"); // هدایت به صفحه ورود اگر کاربر مدیر نباشد
-                }
-
                 LoadBooks();
                 LoadMembers();
+                LoadEmployees();
                 LoadIssues();
             }
         }
@@ -29,27 +24,46 @@ namespace LibraryManagementSystem.Admin
             ddlBooks.DataTextField = "Title";
             ddlBooks.DataValueField = "BookID";
             ddlBooks.DataBind();
-
-            // افزودن آیتم پیش‌فرض
-            ddlBooks.Items.Insert(0, new System.Web.UI.WebControls.ListItem("-- Select Book --", "0"));
         }
 
         private void LoadMembers()
         {
-            string query = "SELECT MemberID, FirstName + ' ' + LastName as FullName FROM Members";
+            string query = "SELECT MemberID, FullName FROM Members";
             DataTable dt = DatabaseHelper.ExecuteQuery(query);
             ddlMembers.DataSource = dt;
             ddlMembers.DataTextField = "FullName";
             ddlMembers.DataValueField = "MemberID";
             ddlMembers.DataBind();
+        }
 
-            // افزودن آیتم پیش‌فرض
-            ddlMembers.Items.Insert(0, new System.Web.UI.WebControls.ListItem("-- عضو را انتخاب کنید --", "0"));
+        private void LoadEmployees()
+        {
+            string query = "SELECT EmployeeID, FirstName + ' ' + LastName as FullName FROM Employee";
+            DataTable dt = DatabaseHelper.ExecuteQuery(query);
+            ddlEmployees.DataSource = dt;
+            ddlEmployees.DataTextField = "FullName";
+            ddlEmployees.DataValueField = "EmployeeID";
+            ddlEmployees.DataBind();
         }
 
         private void LoadIssues()
         {
-            string query = "SELECT i.IssueID, b.Title AS BookTitle, m.FirstName + ' ' + m.LastName as MemberName, i.IssueDate, i.ReturnDate, i.LateFee as FineAmount FROM Issue_Books i INNER JOIN Books b ON i.BookID = b.BookID INNER JOIN Members m ON i.MemberID = m.MemberID";
+            string query = @"
+                SELECT 
+                    i.IssueID, 
+                    b.Title AS BookTitle, 
+                    m.fullName AS MemberName, 
+                    i.IssueDate, 
+                    i.DueDate, 
+                    i.ReturnDate, 
+                    e.FirstName + ' ' + e.LastName AS EmployeeName, 
+                    i.LateFee, 
+                    i.Status
+                FROM Issue_Books i
+                INNER JOIN Books b ON i.BookID = b.BookID
+                INNER JOIN Members m ON i.MemberID = m.MemberID
+                INNER JOIN Employee e ON i.EmployeeID = e.EmployeeID";
+
             DataTable dt = DatabaseHelper.ExecuteQuery(query);
             gvIssues.DataSource = dt;
             gvIssues.DataBind();
@@ -61,19 +75,22 @@ namespace LibraryManagementSystem.Admin
             {
                 int bookID = Convert.ToInt32(ddlBooks.SelectedValue);
                 int memberID = Convert.ToInt32(ddlMembers.SelectedValue);
-                DateTime issueDate = Convert.ToDateTime(txtIssueDate.Text);
-                DateTime returnDate = Convert.ToDateTime(txtReturnDate.Text);
+                string dueDate = (DateTime.Parse(txtDueDate.Text)).ToString("yyyy-MM-dd");
+                int employeeID = Convert.ToInt32(ddlEmployees.SelectedValue);
+                decimal lateFee = Convert.ToDecimal(txtLateFee.Text);
+                string status = ddlStatus.SelectedValue;
 
-                string query = $"INSERT INTO Issue_Books (BookID, MemberID, IssueDate, ReturnDate) VALUES ({bookID}, {memberID}, '{issueDate:yyyy-MM-dd}', '{returnDate:yyyy-MM-dd}')";
+                string query = $" INSERT INTO Issue_Books ( BookID, MemberID, DueDate, EmployeeID, LateFee, Status ) VALUES ( '{bookID}', '{memberID}', '{dueDate}', '{employeeID}', '{lateFee}', N'{status}' )";
+
                 int result = DatabaseHelper.ExecuteNonQuery(query);
 
                 if (result > 0)
                 {
-                    lblMessage.Text = "امانت با موفقیت اضافه شد!";
+                    lblMessage.Text = "امانت با موفقیت اضافه شد.";
                     lblMessage.ForeColor = System.Drawing.Color.Green;
                     lblMessage.Visible = true;
 
-                    ClearFields();
+                    ClearForm();
                     LoadIssues();
                 }
                 else
@@ -91,43 +108,126 @@ namespace LibraryManagementSystem.Admin
             }
         }
 
-        protected void btnClear_Click(object sender, EventArgs e)
+        protected void btnUpdate_Click(object sender, EventArgs e)
         {
-            ClearFields();
-        }
-
-        protected void gvIssues_RowCommand(object sender, System.Web.UI.WebControls.GridViewCommandEventArgs e)
-        {
-            if (e.CommandName == "ClearIssue")
+            try
             {
-                int issueID = Convert.ToInt32(e.CommandArgument);
+                if (ViewState["IssueID"] == null)
+                {
+                    lblMessage.Text = "شناسه امانت معتبر نیست.";
+                    lblMessage.ForeColor = System.Drawing.Color.Red;
+                    lblMessage.Visible = true;
+                    return;
+                }
 
-                string query = $"UPDATE Issue_Books SET ReturnDate=GETDATE(), LateFee=0 WHERE IssueID={issueID}";
+                int issueID = Convert.ToInt32(ViewState["IssueID"]);
+                int bookID = Convert.ToInt32(ddlBooks.SelectedValue);
+                int memberID = Convert.ToInt32(ddlMembers.SelectedValue);
+                string dueDate = (DateTime.Parse(txtDueDate.Text)).ToString("yyyy-MM-dd");
+                int employeeID = Convert.ToInt32(ddlEmployees.SelectedValue);
+                decimal lateFee = Convert.ToDecimal(txtLateFee.Text);
+                string status = ddlStatus.SelectedValue;
+
+                string query = $" UPDATE Issue_Books SET  BookID = '{bookID}', MemberID = '{memberID}', DueDate = '{dueDate}', EmployeeID = '{employeeID}', LateFee = '{lateFee}', Status = N'{status}' WHERE IssueID = '{issueID}'";
+
                 int result = DatabaseHelper.ExecuteNonQuery(query);
 
                 if (result > 0)
                 {
-                    lblMessage.Text = "امانت با موفقیت تسویه شد!";
+                    lblMessage.Text = "امانت با موفقیت ویرایش شد.";
                     lblMessage.ForeColor = System.Drawing.Color.Green;
                     lblMessage.Visible = true;
 
+                    ClearForm();
                     LoadIssues();
+
+                    btnAdd.Visible = true;
+                    btnUpdate.Visible = false;
                 }
                 else
                 {
-                    lblMessage.Text = "خطا در تسویه امانات.";
+                    lblMessage.Text = "خطا در ویرایش امانت.";
+                    lblMessage.ForeColor = System.Drawing.Color.Red;
+                    lblMessage.Visible = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                lblMessage.Text = "خطا: " + ex.Message;
+                lblMessage.ForeColor = System.Drawing.Color.Red;
+                lblMessage.Visible = true;
+            }
+        }
+
+        protected void gvIssues_RowCommand(object sender, System.Web.UI.WebControls.GridViewCommandEventArgs e)
+        {
+            if (e.CommandName == "EditIssue")
+            {
+                int issueID = Convert.ToInt32(e.CommandArgument);
+                ViewState["IssueID"] = issueID;
+
+                string query = $"SELECT * FROM Issue_Books WHERE IssueID = '{issueID}'";
+                DataTable dt = DatabaseHelper.ExecuteQuery(query);
+
+                if (dt.Rows.Count > 0)
+                {
+                    DataRow row = dt.Rows[0];
+                    ddlBooks.SelectedValue = row["BookID"].ToString();
+                    ddlMembers.SelectedValue = row["MemberID"].ToString();
+                    txtDueDate.Text = Convert.ToDateTime(row["DueDate"]).ToString("yyyy-MM-dd");
+                    ddlEmployees.SelectedValue = row["EmployeeID"].ToString();
+                    txtLateFee.Text = row["LateFee"].ToString();
+                    ddlStatus.SelectedValue = row["Status"].ToString();
+
+                    btnAdd.Visible = false;
+                    btnUpdate.Visible = true;
+                }
+            }
+            else if (e.CommandName == "DeleteIssue")
+            {
+                try
+                {
+                    int issueID = Convert.ToInt32(e.CommandArgument);
+
+                    string query = $"DELETE FROM Issue_Books WHERE IssueID = '{issueID}'";
+                    int result = DatabaseHelper.ExecuteNonQuery(query);
+
+                    if (result > 0)
+                    {
+                        lblMessage.Text = "امانت با موفقیت حذف شد.";
+                        lblMessage.ForeColor = System.Drawing.Color.Green;
+                        lblMessage.Visible = true;
+
+                        LoadIssues();
+                    }
+                    else
+                    {
+                        lblMessage.Text = "خطا در حذف امانت.";
+                        lblMessage.ForeColor = System.Drawing.Color.Red;
+                        lblMessage.Visible = true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    lblMessage.Text = "خطا: " + ex.Message;
                     lblMessage.ForeColor = System.Drawing.Color.Red;
                     lblMessage.Visible = true;
                 }
             }
         }
 
-        private void ClearFields()
+        private void ClearForm()
         {
             ddlBooks.SelectedIndex = 0;
             ddlMembers.SelectedIndex = 0;
-            txtIssueDate.Text = string.Empty;
-            txtReturnDate.Text = string.Empty;
+            txtDueDate.Text = string.Empty;
+            ddlEmployees.SelectedIndex = 0;
+            txtLateFee.Text = "0";
+            ddlStatus.SelectedIndex = 0;
+
+            btnAdd.Visible = true;
+            btnUpdate.Visible = false;
+            ViewState["IssueID"] = null;
         }
     }
 }
