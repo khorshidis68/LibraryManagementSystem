@@ -31,7 +31,7 @@ namespace LibraryManagementSystem
                 string query = $"SELECT b.BookID, b.Title, b.Author, c.CategoryName, b.Quantity " +
                                $"FROM Books b " +
                                $"INNER JOIN Category c ON b.CategoryID = c.CategoryID " +
-                               $"WHERE b.Title LIKE '%{searchTerm}%' OR b.Author LIKE '%{searchTerm}%'";
+                               $"WHERE b.Title LIKE N'%{searchTerm}%' OR b.Author LIKE N'%{searchTerm}%'";
                 DataTable dt = DatabaseHelper.ExecuteQuery(query);
 
                 if (dt.Rows.Count > 0)
