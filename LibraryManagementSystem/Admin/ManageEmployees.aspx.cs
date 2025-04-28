@@ -9,19 +9,24 @@ namespace LibraryManagementSystem.Admin
         {
             if (!IsPostBack)
             {
-                // بررسی نقش کاربر
-                if (Session["Role"] == null || Session["Role"].ToString() != "Admin")
-                {
-                    Response.Redirect("~/Login.aspx", false); // هدایت به صفحه ورود اگر کاربر مدیر نباشد
-                }
-
                 LoadEmployees();
             }
         }
 
         private void LoadEmployees()
         {
-            string query = "SELECT * FROM Employee";
+            string query = @"
+                SELECT 
+                    EmployeeID, 
+                    FirstName, 
+                    LastName, 
+                    NationalCode, 
+                    PhoneNumber, 
+                    Address, 
+                    HireDate, 
+                    IsActive 
+                FROM Employee";
+
             DataTable dt = DatabaseHelper.ExecuteQuery(query);
             gvEmployees.DataSource = dt;
             gvEmployees.DataBind();
@@ -31,25 +36,37 @@ namespace LibraryManagementSystem.Admin
         {
             try
             {
-                string fullName = txtFullName.Text.Trim();
-                string position = txtPosition.Text.Trim();
-                DateTime hireDate = Convert.ToDateTime(txtHireDate.Text);
+                string firstName = txtFirstName.Text.Trim();
+                string lastName = txtLastName.Text.Trim();
+                string nationalCode = txtNationalCode.Text.Trim();
+                string phoneNumber = txtPhoneNumber.Text.Trim();
+                string address = txtAddress.Text.Trim();
 
-                string query = $"INSERT INTO Employee (FullName, Position, HireDate) VALUES ('{fullName}', '{position}', '{hireDate:yyyy-MM-dd}')";
+                bool isValid = Validation();
+                if (isValid == false)
+                {
+                    return;
+                }
+
+                string hireDate = (DateTime.Parse(txtHireDate.Text)).ToString("yyyy-MM-dd");
+                bool isActive = chkIsActive.Checked;
+
+                string query = $" INSERT INTO Employee ( FirstName, LastName, NationalCode, PhoneNumber, Address, HireDate, IsActive ) VALUES ( N'{firstName}', N'{lastName}', N'{nationalCode}', N'{phoneNumber}', N'{address}', '{hireDate}', '{isActive}' )";
+
                 int result = DatabaseHelper.ExecuteNonQuery(query);
 
                 if (result > 0)
                 {
-                    lblMessage.Text = "کارمند با موفقیت اضافه شد !";
+                    lblMessage.Text = "کارمند با موفقیت اضافه شد.";
                     lblMessage.ForeColor = System.Drawing.Color.Green;
                     lblMessage.Visible = true;
 
-                    ClearFields();
+                    ClearForm();
                     LoadEmployees();
                 }
                 else
                 {
-                    lblMessage.Text = "خطا در اضافه کردن کارمند.";
+                    lblMessage.Text = "خطا در افزودن کارمند.";
                     lblMessage.ForeColor = System.Drawing.Color.Red;
                     lblMessage.Visible = true;
                 }
@@ -66,28 +83,50 @@ namespace LibraryManagementSystem.Admin
         {
             try
             {
-                int employeeID = Convert.ToInt32(ViewState["EmployeeID"]);
-                string fullName = txtFullName.Text.Trim();
-                string position = txtPosition.Text.Trim();
-                DateTime hireDate = Convert.ToDateTime(txtHireDate.Text);
+                if (ViewState["EmployeeID"] == null)
+                {
+                    lblMessage.Text = "شناسه کارمند معتبر نیست.";
+                    lblMessage.ForeColor = System.Drawing.Color.Red;
+                    lblMessage.Visible = true;
+                    return;
+                }
 
-                string query = $"UPDATE Employee SET FullName='{fullName}', Position='{position}', HireDate='{hireDate:yyyy-MM-dd}' WHERE EmployeeID={employeeID}";
+                int employeeID = Convert.ToInt32(ViewState["EmployeeID"]);
+                string firstName = txtFirstName.Text.Trim();
+                string lastName = txtLastName.Text.Trim();
+                string nationalCode = txtNationalCode.Text.Trim();
+                string phoneNumber = txtPhoneNumber.Text.Trim();
+                string address = txtAddress.Text.Trim();
+
+                bool isValid = Validation();
+                if (isValid == false)
+                {
+                    return;
+                }
+
+                string hireDate = (DateTime.Parse(txtHireDate.Text)).ToString("yyyy/MM/dd");
+
+                bool isActive = chkIsActive.Checked;
+
+                string query = $" UPDATE Employee SET  FirstName = N'{firstName}', LastName = N'{lastName}', NationalCode = N'{nationalCode}', PhoneNumber = N'{phoneNumber}', Address = N'{address}', HireDate = '{hireDate}', IsActive = '{isActive}' WHERE EmployeeID = '{employeeID}'";
+
                 int result = DatabaseHelper.ExecuteNonQuery(query);
 
                 if (result > 0)
                 {
-                    lblMessage.Text = "کارمند با موفقیت به‌روزرسانی شد !";
+                    lblMessage.Text = "کارمند با موفقیت ویرایش شد.";
                     lblMessage.ForeColor = System.Drawing.Color.Green;
                     lblMessage.Visible = true;
 
+                    ClearForm();
+                    LoadEmployees();
+
                     btnAdd.Visible = true;
                     btnUpdate.Visible = false;
-                    ClearFields();
-                    LoadEmployees();
                 }
                 else
                 {
-                    lblMessage.Text = "خطا در به‌روزرسانی کارمند.";
+                    lblMessage.Text = "خطا در ویرایش کارمند.";
                     lblMessage.ForeColor = System.Drawing.Color.Red;
                     lblMessage.Visible = true;
                 }
@@ -105,16 +144,21 @@ namespace LibraryManagementSystem.Admin
             if (e.CommandName == "EditEmployee")
             {
                 int employeeID = Convert.ToInt32(e.CommandArgument);
+                ViewState["EmployeeID"] = employeeID;
 
-                string query = $"SELECT * FROM Employee WHERE EmployeeID={employeeID}";
+                string query = $"SELECT * FROM Employee WHERE EmployeeID = '{employeeID}'";
                 DataTable dt = DatabaseHelper.ExecuteQuery(query);
 
                 if (dt.Rows.Count > 0)
                 {
-                    txtFullName.Text = dt.Rows[0]["FullName"].ToString();
-                    txtPosition.Text = dt.Rows[0]["Position"].ToString();
-                    txtHireDate.Text = Convert.ToDateTime(dt.Rows[0]["HireDate"]).ToString("yyyy-MM-dd");
-                    ViewState["EmployeeID"] = employeeID;
+                    DataRow row = dt.Rows[0];
+                    txtFirstName.Text = row["FirstName"].ToString();
+                    txtLastName.Text = row["LastName"].ToString();
+                    txtNationalCode.Text = row["NationalCode"].ToString();
+                    txtPhoneNumber.Text = row["PhoneNumber"].ToString();
+                    txtAddress.Text = row["Address"].ToString();
+                    txtHireDate.Text = Convert.ToDateTime(row["HireDate"]).ToString("yyyy-MM-dd");
+                    chkIsActive.Checked = Convert.ToBoolean(row["IsActive"]);
 
                     btnAdd.Visible = false;
                     btnUpdate.Visible = true;
@@ -122,33 +166,99 @@ namespace LibraryManagementSystem.Admin
             }
             else if (e.CommandName == "DeleteEmployee")
             {
-                int employeeID = Convert.ToInt32(e.CommandArgument);
-
-                string query = $"DELETE FROM Employee WHERE EmployeeID={employeeID}";
-                int result = DatabaseHelper.ExecuteNonQuery(query);
-
-                if (result > 0)
+                try
                 {
-                    lblMessage.Text = "کارمند با موفقیت حذف شد !";
-                    lblMessage.ForeColor = System.Drawing.Color.Green;
-                    lblMessage.Visible = true;
+                    int employeeID = Convert.ToInt32(e.CommandArgument);
 
-                    LoadEmployees();
+                    string query = $"DELETE FROM Employee WHERE EmployeeID = '{employeeID}'";
+                    int result = DatabaseHelper.ExecuteNonQuery(query);
+
+                    if (result > 0)
+                    {
+                        lblMessage.Text = "کارمند با موفقیت حذف شد.";
+                        lblMessage.ForeColor = System.Drawing.Color.Green;
+                        lblMessage.Visible = true;
+
+                        LoadEmployees();
+                    }
+                    else
+                    {
+                        lblMessage.Text = "خطا در حذف کارمند.";
+                        lblMessage.ForeColor = System.Drawing.Color.Red;
+                        lblMessage.Visible = true;
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    lblMessage.Text = "خطا در حذف کارمند.";
+                    lblMessage.Text = "خطا: " + ex.Message;
                     lblMessage.ForeColor = System.Drawing.Color.Red;
                     lblMessage.Visible = true;
                 }
             }
         }
 
-        private void ClearFields()
+        private void ClearForm()
         {
-            txtFullName.Text = string.Empty;
-            txtPosition.Text = string.Empty;
+            txtFirstName.Text = string.Empty;
+            txtLastName.Text = string.Empty;
+            txtNationalCode.Text = string.Empty;
+            txtPhoneNumber.Text = string.Empty;
+            txtAddress.Text = string.Empty;
             txtHireDate.Text = string.Empty;
+            chkIsActive.Checked = true;
+
+            btnAdd.Visible = true;
+            btnUpdate.Visible = false;
+            ViewState["EmployeeID"] = null;
         }
+
+        private bool Validation()
+        {
+            string firstName = txtFirstName.Text.Trim();
+            string lastName = txtLastName.Text.Trim();
+            string nationalCode = txtNationalCode.Text.Trim();
+            string phoneNumber = txtPhoneNumber.Text.Trim();
+            string address = txtAddress.Text.Trim();
+            lblMessage.Text = "";
+
+            if (string.IsNullOrEmpty(firstName))
+            {
+                lblMessage.Text = "نام اجباری است";
+                lblMessage.ForeColor = System.Drawing.Color.Red;
+                lblMessage.Visible = true;
+                return false;
+            }
+            if (string.IsNullOrEmpty(lastName))
+            {
+                lblMessage.Text += "نام خانوادگی اجباری است";
+                lblMessage.ForeColor = System.Drawing.Color.Red;
+                lblMessage.Visible = true;
+                return false;
+            }
+            if (string.IsNullOrEmpty(nationalCode))
+            {
+                lblMessage.Text += "کد ملی اجباری است";
+                lblMessage.ForeColor = System.Drawing.Color.Red;
+                lblMessage.Visible = true;
+                return false;
+            }
+            if (string.IsNullOrEmpty(phoneNumber))
+            {
+                lblMessage.Text += "شماره تلفن اجباری است";
+                lblMessage.ForeColor = System.Drawing.Color.Red;
+                lblMessage.Visible = true;
+                return false;
+            }
+            if (string.IsNullOrEmpty(address))
+            {
+                lblMessage.Text += "آدرس اجباری است";
+                lblMessage.ForeColor = System.Drawing.Color.Red;
+                lblMessage.Visible = true;
+                return false;
+            }
+
+            return true;
+        }
+
     }
 }
