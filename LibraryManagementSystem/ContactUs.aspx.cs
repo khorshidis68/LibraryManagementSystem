@@ -27,7 +27,7 @@ namespace LibraryManagementSystem
                 
                 if (result > 0)
                 {
-                    lblMessage.Text = "Your message has been submitted successfully!";
+                    lblMessage.Text = "پیام شما با موفقیت ارسال شد!";
                     lblMessage.Visible = true;
 
                     // پاک کردن فیلدها پس از ارسال موفق
@@ -37,7 +37,7 @@ namespace LibraryManagementSystem
                 }
                 else
                 {
-                    lblMessage.Text = "An error occurred while submitting your message.";
+                    lblMessage.Text = "هنگام ارسال پیام شما خطایی رخ داد.";
                     lblMessage.ForeColor = System.Drawing.Color.Red;
                     lblMessage.Visible = true;
                 }

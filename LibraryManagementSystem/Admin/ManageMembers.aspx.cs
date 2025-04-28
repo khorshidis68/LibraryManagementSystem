@@ -36,7 +36,13 @@ namespace LibraryManagementSystem.Admin
                 string phone = txtPhone.Text.Trim();
                 string address = txtAddress.Text.Trim();
 
-                string query = $"INSERT INTO Members (FullName, Email, Phone, Address) VALUES ('{fullName}', '{email}', '{phone}', '{address}')";
+                bool isValid = Validation();
+                if (isValid == false)
+                {
+                    return;
+                }
+
+                string query = $"INSERT INTO Members (FullName, Email, Phone, Address) VALUES (N'{fullName}', N'{email}', '{phone}', N'{address}')";
                 int result = DatabaseHelper.ExecuteNonQuery(query);
 
                 if (result > 0)
@@ -73,7 +79,13 @@ namespace LibraryManagementSystem.Admin
                 string phone = txtPhone.Text.Trim();
                 string address = txtAddress.Text.Trim();
 
-                string query = $"UPDATE Members SET FullName='{fullName}', Email='{email}', Phone='{phone}', Address='{address}' WHERE MemberID={memberID}";
+                bool isValid = Validation();
+                if (isValid == false)
+                {
+                    return;
+                }
+
+                string query = $"UPDATE Members SET FullName=N'{fullName}', Email=N'{email}', Phone='{phone}', Address=N'{address}' WHERE MemberID={memberID}";
                 int result = DatabaseHelper.ExecuteNonQuery(query);
 
                 if (result > 0)
@@ -154,5 +166,47 @@ namespace LibraryManagementSystem.Admin
             txtPhone.Text = string.Empty;
             txtAddress.Text = string.Empty;
         }
+
+        private bool Validation()
+        {
+            string fullName = txtFullName.Text.Trim();
+            string email = txtEmail.Text.Trim();
+            string phone = txtPhone.Text.Trim();
+            string address = txtAddress.Text.Trim();
+            lblMessage.Text = "";
+
+            if (string.IsNullOrEmpty(fullName))
+            {
+                lblMessage.Text = "نام کامل اجباری است";
+                lblMessage.ForeColor = System.Drawing.Color.Red;
+                lblMessage.Visible = true;
+                return false;
+            }
+            if (string.IsNullOrEmpty(email))
+            {
+                lblMessage.Text += "ایمیل اجباری است";
+                lblMessage.ForeColor = System.Drawing.Color.Red;
+                lblMessage.Visible = true;
+                return false;
+            }
+            if (string.IsNullOrEmpty(phone))
+            {
+                lblMessage.Text += "تلفن اجباری است";
+                lblMessage.ForeColor = System.Drawing.Color.Red;
+                lblMessage.Visible = true;
+                return false;
+            }
+            if (string.IsNullOrEmpty(address))
+            {
+                lblMessage.Text += "آدرس اجباری است";
+                lblMessage.ForeColor = System.Drawing.Color.Red;
+                lblMessage.Visible = true;
+                return false;
+            }
+
+            return true;
+        }
     }
+
+
 }

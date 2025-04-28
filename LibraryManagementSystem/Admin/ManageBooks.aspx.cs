@@ -49,9 +49,16 @@ namespace LibraryManagementSystem.Admin
                 string title = txtTitle.Text.Trim();
                 string author = txtAuthor.Text.Trim();
                 int categoryID = Convert.ToInt32(ddlCategory.SelectedValue);
+
+                bool isValid = Validation();
+                if (isValid == false)
+                {
+                    return;
+                }
+
                 int quantity = Convert.ToInt32(txtQuantity.Text.Trim());
 
-                string query = $"INSERT INTO Books (Title, Author, CategoryID, Quantity) VALUES ('{title}', '{author}', {categoryID}, {quantity})";
+                string query = $"INSERT INTO Books (Title, Author, CategoryID, Quantity) VALUES (N'{title}', N'{author}', {categoryID}, {quantity})";
                 int result = DatabaseHelper.ExecuteNonQuery(query);
 
                 if (result > 0)
@@ -86,9 +93,16 @@ namespace LibraryManagementSystem.Admin
                 string title = txtTitle.Text.Trim();
                 string author = txtAuthor.Text.Trim();
                 int categoryID = Convert.ToInt32(ddlCategory.SelectedValue);
+
+                bool isValid = Validation();
+                if (isValid == false)
+                {
+                    return;
+                }
+
                 int quantity = Convert.ToInt32(txtQuantity.Text.Trim());
 
-                string query = $"UPDATE Books SET Title='{title}', Author='{author}', CategoryID={categoryID}, Quantity={quantity} WHERE BookID={bookID}";
+                string query = $"UPDATE Books SET Title=N'{title}', Author=N'{author}', CategoryID={categoryID}, Quantity={quantity} WHERE BookID={bookID}";
                 int result = DatabaseHelper.ExecuteNonQuery(query);
 
                 if (result > 0)
@@ -169,6 +183,45 @@ namespace LibraryManagementSystem.Admin
             txtAuthor.Text = string.Empty;
             ddlCategory.SelectedIndex = 0;
             txtQuantity.Text = string.Empty;
+        }
+
+        private bool Validation()
+        {
+            string title = txtTitle.Text.Trim();
+            string author = txtAuthor.Text.Trim();
+            int categoryID = Convert.ToInt32(ddlCategory.SelectedValue);
+            lblMessage.Text = "";
+
+            if (string.IsNullOrEmpty(title))
+            {
+                lblMessage.Text = "عنوان اجباری است";
+                lblMessage.ForeColor = System.Drawing.Color.Red;
+                lblMessage.Visible = true;
+                return false;
+            }
+            if (string.IsNullOrEmpty(author))
+            {
+                lblMessage.Text += "نویسنده اجباری است";
+                lblMessage.ForeColor = System.Drawing.Color.Red;
+                lblMessage.Visible = true;
+                return false;
+            }
+            if (string.IsNullOrEmpty(txtQuantity.Text.Trim()))
+            {
+                lblMessage.Text += "تعداد اجباری است";
+                lblMessage.ForeColor = System.Drawing.Color.Red;
+                lblMessage.Visible = true;
+                return false;
+            }
+            if (categoryID == 0)
+            {
+                lblMessage.Text += "دسته‌بندی اجباری است";
+                lblMessage.ForeColor = System.Drawing.Color.Red;
+                lblMessage.Visible = true;
+                return false;
+            }
+
+            return true;
         }
     }
 }

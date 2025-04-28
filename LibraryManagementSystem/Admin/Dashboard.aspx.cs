@@ -27,26 +27,26 @@ namespace LibraryManagementSystem.Admin
                 // تعداد کتاب‌ها
                 string queryBooks = "SELECT COUNT(*) FROM Books";
                 int totalBooks = Convert.ToInt32(DatabaseHelper.ExecuteScalar(queryBooks));
-                lblTotalBooks.Text = $"Total Books: {totalBooks}";
+                lblTotalBooks.Text = $"مجموع کتاب‌ها: {totalBooks}";
 
                 // تعداد اعضا
                 string queryMembers = "SELECT COUNT(*) FROM Members";
                 int totalMembers = Convert.ToInt32(DatabaseHelper.ExecuteScalar(queryMembers));
-                lblTotalMembers.Text = $"Total Members: {totalMembers}";
+                lblTotalMembers.Text = $"کل اعضا: {totalMembers}";
 
                 // تعداد کارمندان
                 string queryEmployees = "SELECT COUNT(*) FROM Employee";
                 int totalEmployees = Convert.ToInt32(DatabaseHelper.ExecuteScalar(queryEmployees));
-                lblTotalEmployees.Text = $"Total Employees: {totalEmployees}";
+                lblTotalEmployees.Text = $"کل کارمندان: {totalEmployees}";
 
                 // تعداد امانات
                 string queryIssues = "SELECT COUNT(*) FROM Issue_Books";
                 int totalIssues = Convert.ToInt32(DatabaseHelper.ExecuteScalar(queryIssues));
-                lblTotalIssues.Text = $"Total Issues: {totalIssues}";
+                lblTotalIssues.Text = $"کل امانات: {totalIssues}";
             }
             catch (Exception ex)
             {
-                lblTotalBooks.Text = "Error loading statistics.";
+                lblTotalBooks.Text = "خطا در بارگیری آمار.";
                 lblTotalMembers.Text = ex.Message;
             }
         }

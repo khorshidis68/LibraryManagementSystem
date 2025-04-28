@@ -9,7 +9,7 @@
 <body>
     <form id="form1" runat="server">
         <header>
-            <h1>تماس با ما</h1>
+            <h3>تماس با ما</h3>
         </header>
         <main>
             <div>

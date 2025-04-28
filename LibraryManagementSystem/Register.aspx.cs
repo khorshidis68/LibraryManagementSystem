@@ -25,7 +25,7 @@ namespace LibraryManagementSystem
 
                 if (userCount > 0)
                 {
-                    lblMessage.Text = "This username is already taken!";
+                    lblMessage.Text = "این نام کاربری قبلاً استفاده شده است!";
                     lblMessage.Visible = true;
                     return;
                 }
@@ -36,7 +36,7 @@ namespace LibraryManagementSystem
 
                 if (result > 0)
                 {
-                    lblMessage.Text = "Registration successful! You can now login.";
+                    lblMessage.Text = "ثبت نام با موفقیت انجام شد! اکنون می‌توانید وارد شوید.";
                     lblMessage.ForeColor = System.Drawing.Color.Green;
                     lblMessage.Visible = true;
 

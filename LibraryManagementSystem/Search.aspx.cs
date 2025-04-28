@@ -22,7 +22,7 @@ namespace LibraryManagementSystem
 
                 if (string.IsNullOrEmpty(searchTerm))
                 {
-                    lblMessage.Text = "Please enter a search term.";
+                    lblMessage.Text = "لطفا عبارت جستجو را وارد کنید.";
                     lblMessage.Visible = true;
                     return;
                 }
@@ -42,7 +42,7 @@ namespace LibraryManagementSystem
                 }
                 else
                 {
-                    lblMessage.Text = "No books found matching your search.";
+                    lblMessage.Text = "هیچ کتابی مطابق با جستجوی شما یافت نشد.";
                     lblMessage.Visible = true;
                     gvBooks.DataSource = null;
                     gvBooks.DataBind();

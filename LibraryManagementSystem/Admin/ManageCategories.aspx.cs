@@ -33,7 +33,15 @@ namespace LibraryManagementSystem.Admin
             {
                 string categoryName = txtCategoryName.Text.Trim();
 
-                string query = $"INSERT INTO Category (CategoryName) VALUES ('{categoryName}')";
+                if (string.IsNullOrEmpty(categoryName))
+                {
+                    lblMessage.Text = "نام دسته‌بندی اجباری است";
+                    lblMessage.ForeColor = System.Drawing.Color.Red;
+                    lblMessage.Visible = true;
+                    return;
+                }
+
+                string query = $"INSERT INTO Category (CategoryName) VALUES (N'{categoryName}')";
                 int result = DatabaseHelper.ExecuteNonQuery(query);
 
                 if (result > 0)
@@ -67,7 +75,15 @@ namespace LibraryManagementSystem.Admin
                 int categoryID = Convert.ToInt32(ViewState["CategoryID"]);
                 string categoryName = txtCategoryName.Text.Trim();
 
-                string query = $"UPDATE Category SET CategoryName='{categoryName}' WHERE CategoryID={categoryID}";
+                if (string.IsNullOrEmpty(categoryName))
+                {
+                    lblMessage.Text = "نام دسته‌بندی اجباری است";
+                    lblMessage.ForeColor = System.Drawing.Color.Red;
+                    lblMessage.Visible = true;
+                    return;
+                }
+
+                string query = $"UPDATE Category SET CategoryName=N'{categoryName}' WHERE CategoryID={categoryID}";
                 int result = DatabaseHelper.ExecuteNonQuery(query);
 
                 if (result > 0)

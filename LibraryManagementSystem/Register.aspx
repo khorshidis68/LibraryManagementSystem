@@ -9,7 +9,7 @@
 <body>
     <form id="form1" runat="server">
         <header>
-            <h1>ثبت‌نام</h1>
+            <h3>ثبت‌نام</h3>
         </header>
         <main>
             <div>

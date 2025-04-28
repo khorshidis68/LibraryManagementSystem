@@ -1,10 +1,12 @@
 ﻿/* تنظیمات عمومی صفحه */
 body {
-    font-family: Arial, sans-serif; /* فونت پیش‌فرض */
+    font-family: Tahoma, Arial, sans-serif; /* فونت پیش‌فرض */
     margin: 0; /* حذف مارجین‌های پیش‌فرض */
     padding: 0; /* حذف پدینگ‌های پیش‌فرض */
     background-color: #f4f4f9; /* رنگ زمینه صفحه */
     color: #333; /* رنگ متن پیش‌فرض */
+    direction: rtl;
+    text-align: right;
 }
 
 /* Header سایت */
@@ -41,7 +43,7 @@ nav {
 /* محتوای اصلی */
 main {
     padding: 20px; /* فاصله داخلی محتوا */
-    min-height: calc(100vh - 120px); /* ارتفاع حداقلی محتوا */
+    /*min-height: calc(100vh - 120px);*/ /* ارتفاع حداقلی محتوا */
     background-color: #fff; /* رنگ زمینه محتوا */
     margin: 20px; /* فاصله خارجی محتوا */
     border-radius: 8px; /* گرد کردن گوشه‌ها */
@@ -53,6 +55,9 @@ table {
     width: 100%; /* عرض جدول به صورت کامل */
     border-collapse: collapse; /* ادغام خطوط جدول */
     margin-bottom: 20px; /* فاصله پایین جدول */
+    direction: rtl;
+    text-align: right;
+    font-family: Tahoma, Arial, sans-serif; /* فونت مناسب برای زبان فارسی */
 }
 
     table th, table td {
@@ -85,6 +90,9 @@ button, input[type="submit"], .btn {
     cursor: pointer; /* تبدیل مکان‌نما به دستی */
     border-radius: 5px; /* گرد کردن گوشه‌ها */
     transition: background-color 0.3s ease; /* انتقال رنگ به صورت نرم */
+    direction: rtl;
+    text-align: right;
+    font-family: Tahoma, Arial, sans-serif; /* فونت مناسب برای زبان فارسی */
 }
 
     button:hover, input[type="submit"]:hover, .btn:hover {
@@ -93,12 +101,15 @@ button, input[type="submit"], .btn {
 
 /* فرم‌ها */
 form {
-    max-width: 500px; /* حداکثر عرض فرم */
+    max-width: 70%; /* حداکثر عرض فرم */
     margin: auto; /* قرار دادن فرم در وسط صفحه */
     padding: 20px; /* فاصله داخلی فرم */
     background-color: #f9f9f9; /* رنگ زمینه فرم */
     border-radius: 8px; /* گرد کردن گوشه‌ها */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* سایه برای فرم */
+    direction: rtl;
+    text-align: right;
+    font-family: Tahoma, Arial, sans-serif; /* فونت مناسب برای زبان فارسی */
 }
 
     form label {
@@ -110,7 +121,7 @@ form {
     form input[type="text"],
     form input[type="password"],
     form input[type="email"] {
-        width: 100%; /* عرض کامل ورودی‌ها */
+        width: 95%; /* عرض کامل ورودی‌ها */
         padding: 10px; /* فاصله داخلی ورودی‌ها */
         margin-bottom: 15px; /* فاصله پایین ورودی‌ها */
         border: 1px solid #ccc; /* خط دور ورودی‌ها */
@@ -141,4 +152,22 @@ footer {
     color: green; /* رنگ متن پیام‌های موفقیت */
     font-size: 14px; /* اندازه فونت پیام‌های موفقیت */
     margin-bottom: 10px; /* فاصله پایین پیام‌های موفقیت */
+}
+
+/* تنظیم جهت‌گیری برای ورودی‌ها (Input Fields) */
+input, textarea, select {
+    direction: rtl;
+    text-align: right;
+}
+
+/* تنظیم جهت‌گیری برای لیست‌ها */
+ul, ol {
+    direction: rtl;
+    text-align: right;
+}
+
+/* تنظیم جهت‌گیری برای عنوان‌ها */
+h1, h2, h3, h4, h5, h6 {
+    direction: rtl;
+    text-align: right;
 }
